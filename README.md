@@ -2,8 +2,9 @@
 Wykorzystanie DJI Thermal SDK w praktyce OSP
 
 ## Instalacja
+* Potrzebujemy libimage-exiftool-perl
 * Pobierz DJI Thermal SDK - https://www.dji.com/pl/downloads/softwares/dji-thermal-sdk i rozpakuj go.
-* Biblioteki Python instalowane z apt-get (python3): scipy, numpy, matplotlib, tqdm,
+* Biblioteki Python instalowane z apt-get (python3): scipy, numpy, matplotlib, tqdm, tifffile, piexif
 * Biblioteka thermal-parser - pobierz z https://github.com/SanNianYiSi/thermal_parser a następnie ./setup.py install
 
 ## Konfiguracja
