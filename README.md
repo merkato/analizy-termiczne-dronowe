@@ -21,3 +21,7 @@ lub jeśli chcesz wyznaczyć obszary z temperaturą zbliżoną do mediany (zakre
 ```
 python3 ./termika.py -strefa
 ```
+W trybie -orto pliki przetwarzane są do formatu TIFF z temperaturą zapisaną jako wartości licbowe. Pozwala to na przetwarzanie w OpenDroneMap
+```
+python ./termika.py -orto
+```
