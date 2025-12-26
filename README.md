@@ -8,8 +8,9 @@ Wykorzystanie DJI Thermal SDK w praktyce OSP
 
 ## Konfiguracja
 
-W pliku termika.conf dostosuj parametry do swoich potrzeb. Wskaż plik PNG z logo, nazwę jednostki. 
-W parametrze dji_libs_path wprowadź ścieżkę dostępu do katalogu z plikami .so (zobacz przykład w pliku termika.conf)
+* W pliku termika.conf dostosuj parametry do swoich potrzeb. 
+* Wskaż plik PNG z logo, nazwę jednostki. 
+* W parametrze dji_libs_path wprowadź ścieżkę dostępu do katalogu z plikami .so (zobacz przykład w pliku termika.conf) - ponieważ oryginalnie thermal_parser używa SDK w wersji 1.7, musimy samodzielnie przygotować nowsze, obsługujące m.in. H30T.
 
 ## Praca
 Umieść pliki termika.py i termika.conf w katalogu z kadrami do analizy. Następnie wywołaj przy pomocy
