@@ -12,6 +12,7 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from PIL import Image as PILImage
 from scipy.ndimage import gaussian_filter
 from tqdm import tqdm
+import subprocess
 
 # ==========================================
 # 1. KONFIGURACJA
@@ -52,20 +53,33 @@ thermal_engine = Thermal(dtype=np.float32)
 # ==========================================
 
 def save_radiometric_tiff(source_jpg, data, output_path):
-    """Zapisuje surowe dane jako 32-bit TIFF, kopiując EXIF z oryginału."""
-    # Pobieramy EXIF z oryginału
-    exif_dict = piexif.load(source_jpg)
-    exif_bytes = piexif.dump(exif_dict)
-    
-    # Zapisujemy TIFF (float32) z osadzonym EXIF
-    # Photoshop/DJI Terra odczytają to jako dane radiometryczne
-    tiff.imwrite(
-        output_path, 
-        data.astype(np.float32), 
-        photometric='minisblack',
-        description='DJI Radiometric Thermal Data',
-        metadata={'EXIF': exif_bytes}
-    )
+    """Zapisuje dane float32 i kopiuje komplet metadanych DJI za pomocą ExifTool."""
+    try:
+        # KROK 1: Zapis surowych danych (czysty TIFF bez metadanych)
+        tiff.imwrite(
+            output_path, 
+            data.astype(np.float32), 
+            photometric='minisblack',
+            description='DJI Radiometric Thermal Data'
+        )
+
+        # KROK 2: Kopiowanie wszystkich metadanych (GPS, XMP, RTK, EXIF)
+        # -TagsFromFile: bierzemy tagi z pliku źródłowego
+        # -all:all: kopiujemy wszystkie możliwe grupy metadanych
+        # -unsafe: kopiujemy tagi systemowe (często używane przez DJI do RTK)
+        # -overwrite_original: nie tworzy pliku kopii .tif_original
+        result = subprocess.run([
+            'exiftool', '-overwrite_original', 
+            '-TagsFromFile', source_jpg, 
+            '-all:all', '-unsafe', 
+            output_path
+        ], capture_output=True, text=True)
+
+        if result.returncode != 0:
+            print(f"\n[!] ExifTool ostrzeżenie dla {os.path.basename(source_jpg)}: {result.stderr}")
+
+    except Exception as e:
+        print(f"\n[BŁĄD KRYTYCZNY] Podczas zapisu {output_path}: {e}")
 
 def process_image(filepath, logo_img, mode):
     fname = os.path.basename(filepath)
